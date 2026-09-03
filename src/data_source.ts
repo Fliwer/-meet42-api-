@@ -1,8 +1,8 @@
-import 'reflect-metadata';
+import 'reflect-metadata'; // requis par les décorateurs TypeORM (@Entity, @Column) pour lire les types à l'exécution
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config(); // doit tourner avant qu'on lise process.env plus bas, sinon les valeurs sont undefined
 
 export const AppDataSource = new DataSource({
 
