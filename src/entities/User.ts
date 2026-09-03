@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Check } from "typeorm";
 
 @Entity('users') // cette classe = la table "users" en base
+@Check(`"birth_date" > '1900-01-01'`)
 export class User {
     @PrimaryGeneratedColumn('uuid') // id généré automatiquement par Postgres, en UUID plutôt qu'un nombre qui s'incrémente (pour ne pas laisser deviner le nombre d'utilisateurs)
     id!: string;
@@ -35,9 +36,9 @@ export class User {
     @Column({ type: 'timestamptz', nullable: true }) // date + fuseau horaire (Bruxelles change d'heure) ; vide = pas encore vérifié, remplie = vérifié depuis cette date
     verified_at!: Date;
 
-    @CreateDateColumn() // remplie automatiquement par TypeORM à la création de la ligne
+    @CreateDateColumn({type: 'timestamptz'}) // remplie automatiquement par TypeORM à la création de la ligne
     created_at!: Date;
 
-    @UpdateDateColumn() // remise à jour automatiquement à chaque modification de la ligne
+    @UpdateDateColumn({type: 'timestamptz'}) // remise à jour automatiquement à chaque modification de la ligne
     updated_at!: Date;
 }
