@@ -1,7 +1,12 @@
 import express from 'express';
 import { AppDataSource } from './data_source';
+import router from './routes' // toutes les routes définies dans routes/index 
 
 const app = express(); // express() fabrique l'objet "app", avec des méthodes déjà prêtes à l'emploi (.get, .post, .listen...)
+
+app.use('/api', router); // toute URL commençant par /api passe par ce routeur
+
+
 const PORT = process.env.PORT!; // "!" dit à TypeScript de ne pas s'inquiéter d'un undefined — ça ne garantit rien sur la vraie valeur
 
 AppDataSource.initialize() // se connecter à Postgres prend du temps, donc ça renvoie une Promise
@@ -18,4 +23,4 @@ AppDataSource.initialize() // se connecter à Postgres prend du temps, donc ça 
   .catch((error) => {
     // ce bloc s'exécute SI la connexion échoue ; app.listen n'est jamais appelé ici, le serveur ne démarre pas du tout
     console.error('❌ Erreur de connexion à la base de données', error);
-  });
+  }); 
