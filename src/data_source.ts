@@ -7,16 +7,16 @@ dotenv.config(); // doit tourner avant qu'on lise process.env plus bas, sinon le
 
 export const AppDataSource = new DataSource({
 
-    type: 'postgres',
+ type: 'postgres',
+    // ces 5 lignes viennent toutes de .env — jamais écrites en dur, pour ne pas exposer le mot de passe
     host: process.env.DB_HOST!,
     port: Number(process.env.DB_PORT)!,
     username: process.env.DB_USER!,
     password: process.env.DB_PASSWORD!,
     database: process.env.DB_NAME!,
-    synchronize: false,
-    entities: [User],
-    migrations: ['src/migrations/*.ts'],
-
+    synchronize: false, // jamais laisser TypeORM modifier le schéma tout seul
+    entities: [User], // les tables que TypeORM connaît
+    migrations: ['src/migrations/*.ts'], // où trouver les fichiers de migration
 
 
 });
