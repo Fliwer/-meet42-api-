@@ -4,6 +4,7 @@ import router from './routes' // toutes les routes définies dans routes/index
 
 const app = express(); // express() fabrique l'objet "app", avec des méthodes déjà prêtes à l'emploi (.get, .post, .listen...)
 
+app.use(express.json()); // décode le JSON envoyé par le client avant que les routes ne le reçoivent
 app.use('/api', router); // toute URL commençant par /api passe par ce routeur
 
 
