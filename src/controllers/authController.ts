@@ -1,7 +1,12 @@
 import { User } from '../entities/User';
 import { AppDataSource } from '../data_source';
-
 import { Request, Response } from 'express';
+
+// jsonwebtoken = un outil qui fabrique un jeton signé, prouvant l'identité
+// d'un utilisateur connecté, sans qu'il ait besoin de retaper son mot de passe à chaque requête
+
+import jwt from 'jsonwebtoken';
+
 
 
 // bcryptjs = un outil qui transforme un mot de passe en code brouillé (un "hash")
@@ -30,7 +35,7 @@ const authController = {
 
     const user = userRepository.create({ email, password_hash, display_name, birth_date });
 
-        try {
+    try {
       await userRepository.save(user);
     } catch (erreur) {
 
@@ -50,6 +55,27 @@ const authController = {
 
     res.status(201).json({ id: user.id, email: user.email, display_name: user.display_name });
   },
+  login: async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email et mot de passe obligatoire' })
+    }
+
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(401).json({ error: 'Email ou mot de passe incorrect' })
+    }
+    const motDePasseValide = await bcrypt.compare (password, user.password_hash);
+    
+    if (!motDePasseValide) { return res.status(401).json({ error: 'Email ou mot de passe incorrect' }) 
+    } 
+    const token = jwt.sign ({ id: user.id}, process.env.JWT_SECRET!, { expiresIn: '7days'});
+    res.status(200).json({ token });
+  },
+
 };
 
 
