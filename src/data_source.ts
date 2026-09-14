@@ -2,6 +2,8 @@ import 'reflect-metadata'; // requis par les décorateurs TypeORM (@Entity, @Col
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { User } from './entities/User';
+import { Event } from './entities/Event'; 
+
 
 dotenv.config(); // doit tourner avant qu'on lise process.env plus bas, sinon les valeurs sont undefined
 
@@ -15,7 +17,7 @@ export const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD!,
     database: process.env.DB_NAME!,
     synchronize: false, // jamais laisser TypeORM modifier le schéma tout seul
-    entities: [User], // les tables que TypeORM connaît
+    entities: [User, Event], // les tables que TypeORM connaît
     migrations: ['src/migrations/*.ts'], // où trouver les fichiers de migration
 
 
