@@ -2,8 +2,16 @@ import express from 'express';
 import { AppDataSource } from './data_source';
 import router from './routes' // toutes les routes définies dans routes/index 
 
+// cors = un outil qui autorise (ou non) qu'une page web d'une autre origine (autre domaine/port) appelle cette API
+// le souci venait du fait que meet42-web était sur localhost:3000 et meet42-api sur localhost:8080 :
+// le navigateur, par sécurité, n'autorisait pas l'appel fetch entre ces deux origines différentes
+
+import cors from 'cors';
+
+
 const app = express(); // express() fabrique l'objet "app", avec des méthodes déjà prêtes à l'emploi (.get, .post, .listen...)
 
+app.use(cors({ origin: 'http://localhost:3000' })); // autorise uniquement le frontend Next.js à appeler cette API
 app.use(express.json()); // décode le JSON envoyé par le client avant que les routes ne le reçoivent
 app.use('/api', router); // toute URL commençant par /api passe par ce routeur
 
