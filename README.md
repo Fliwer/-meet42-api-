@@ -47,3 +47,20 @@ En construction. Connexion à PostgreSQL fonctionnelle, première entité
 - [`docs/PERIMETRE.md`](docs/PERIMETRE.md) — ce qui est dans le TFE (P1/P2) et ce qui n'y est pas (Vision)
 - [`docs/SCHEMA-EA.md`](docs/SCHEMA-EA.md) — schéma entité/association
 - [`docs/CAS-UTILISATION.md`](docs/CAS-UTILISATION.md) — cas d'utilisation UML
+
+requête HTTP
+   ↓
+ROUTES (authRouter.ts, userRoutes.ts, eventRouter.ts)
+   → décide quelle URL déclenche quelle fonction
+   ↓
+CONTROLLERS (authController.ts, userControler.ts, eventControlers.ts)
+   → lit la requête (req.body, req.params...), appelle le service, renvoie la réponse
+   ↓
+SERVICES (authService.ts, userService.ts, eventService.ts)
+   → SEUL endroit qui parle à la base, via un Repository
+   ↓
+ENTITÉS (User.ts, Event.ts)
+   → décrivent la forme d'une table
+   ↓
+data_source.ts
+   → la config de connexion à PostgreSQL, utilisée par tous les services
