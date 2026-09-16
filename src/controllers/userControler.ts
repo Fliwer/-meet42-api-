@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { AppDataSource } from '../data_source';
-import { User } from '../entities/User';
+import userService from '../services/userService'; // toute la logique DB vit maintenant ici, plus dans ce fichier
 
 const userController = {
   deleteAccount: async (req: Request, res: Response) => {
@@ -10,38 +9,35 @@ const userController = {
     // ici on LIT cette valeur — c'est le middleware qui l'avait ÉCRITE avant nous
     const idUtilisateur = (req as { userId?: string }).userId;
 
-    // ne récupère aucune donnée : donne juste l'outil pour lire/écrire dans la table "users"
-    const userRepository = AppDataSource.getRepository(User);
-
-    // ici, et seulement ici, une vraie requête part vers PostgreSQL :
-    // "supprime la ligne de la table users dont l'id vaut userId"
     // le "!" dit à TypeScript "je te garantis qu'il n'est pas undefined"
     // (on peut le garantir : le middleware n'appelle next() que s'il a bien posé userId)
-    await userRepository.delete(idUtilisateur!);
+    // le controller ne sait plus COMMENT on supprime en base — il demande juste au service de le faire
+    await userService.deleteAccount(idUtilisateur!);
 
     // on confirme au client que la suppression a eu lieu
     res.status(200).json({ message: 'Compte supprimé' });
   },
+
   getMe: async (req: Request, res: Response) => {
-  // même lecture que dans deleteAccount : le middleware a déjà posé userId sur req
-  const idUtilisateur = (req as { userId?: string }).userId;
+    // même lecture que dans deleteAccount : le middleware a déjà posé userId sur req
+    const idUtilisateur = (req as { userId?: string }).userId;
 
-  const userRepository = AppDataSource.getRepository(User);
+    // le service renvoie soit l'utilisateur trouvé, soit null
+    // c'est ICI, dans le controller, qu'on décide quoi répondre selon le résultat
+    const user = await userService.getMe(idUtilisateur!);
 
-  // cette fois on ne supprime pas, on va CHERCHER la ligne correspondante
-  const user = await userRepository.findOneBy({ id: idUtilisateur!});
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur introuvable' });
+    }
 
-  if (!user) {
-    return res.status(404).json({ error: 'Utilisateur introuvable' });
-  }
+    // destructuring : sort "password_hash" tout seul, et regroupe TOUT LE RESTE dans userSansMotDePasse
+    // (comme trier un panier de fruits : sors la banane, mets le reste dans un nouveau panier)
+    // password_hash n'est jamais utilisé après, donc jamais renvoyé au frontend
 
-  // on ne veut JAMAIS renvoyer password_hash au frontend, même haché
-  // cette syntaxe (destructuring) sépare password_hash du reste de l'objet
-  const { password_hash, ...userSansMotDePasse } = user;
+    const { password_hash, ...userSansMotDePasse } = user;
 
-  res.status(200).json(userSansMotDePasse);
-},
-
+    res.status(200).json(userSansMotDePasse);
+  },
 };
 
 export default userController;
