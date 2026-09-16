@@ -22,6 +22,26 @@ const userController = {
     // on confirme au client que la suppression a eu lieu
     res.status(200).json({ message: 'Compte supprimé' });
   },
+  getMe: async (req: Request, res: Response) => {
+  // même lecture que dans deleteAccount : le middleware a déjà posé userId sur req
+  const idUtilisateur = (req as { userId?: string }).userId;
+
+  const userRepository = AppDataSource.getRepository(User);
+
+  // cette fois on ne supprime pas, on va CHERCHER la ligne correspondante
+  const user = await userRepository.findOneBy({ id: idUtilisateur!});
+
+  if (!user) {
+    return res.status(404).json({ error: 'Utilisateur introuvable' });
+  }
+
+  // on ne veut JAMAIS renvoyer password_hash au frontend, même haché
+  // cette syntaxe (destructuring) sépare password_hash du reste de l'objet
+  const { password_hash, ...userSansMotDePasse } = user;
+
+  res.status(200).json(userSansMotDePasse);
+},
+
 };
 
 export default userController;

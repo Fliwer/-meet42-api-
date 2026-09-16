@@ -15,6 +15,7 @@ const userRouter = express.Router();
 // authMiddleware s'exécute EN PREMIER ; userController.deleteAccount ne s'exécute
 // QUE SI authMiddleware appelle next()
 userRouter.delete('/me', authMiddleware, userController.deleteAccount);
+userRouter.get('/me', authMiddleware, userController.getMe);
 
 // on rend ce routeur utilisable ailleurs (dans routes/index.ts, à l'étape suivante)
 export default userRouter;
