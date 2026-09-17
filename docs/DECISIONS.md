@@ -393,6 +393,23 @@ la partie « difficultés rencontrées » de la présentation.
 
 ---
 
+## 2026-09-17 — Ingestion limitée à 25 événements (une page), pas les 6022
+
+**Décidé.** Le script d'ingestion traite le contenu de `evenements-brut.json`
+tel quel — une seule page de résultats, 25 événements.
+
+**Écarté.** Paginer sur les 241 pages pour récupérer les 6022 événements
+disponibles chez agenda.brussels.
+
+**Pourquoi.** 25 événements suffisent largement à démontrer le mécanisme
+d'ingestion et à peupler une carte pour la démo — le nombre exact n'a aucune
+importance pour la note. Paginer sur 241 appels réseau ajoute de la complexité
+(gestion des erreurs réseau, limites de débit de l'API, temps d'exécution) sans
+bénéfice pour le TFE. La pagination complète reste une évolution possible si le
+temps le permet, mais n'est pas nécessaire.
+
+---
+
 <!--
 Modèle à copier pour la suite :
 

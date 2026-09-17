@@ -1,3 +1,11 @@
+// on importe 6 étiquettes différentes depuis la librairie typeorm, chacune avec un rôle précis :
+// Entity : marque une classe entière comme représentant une table
+// Column : marque une propriété comme étant une colonne normale
+// PrimaryGeneratedColumn : la colonne d'identifiant unique, générée automatiquement (id)
+// CreateDateColumn : une colonne remplie automatiquement à la création de la ligne
+// Unique : empêche que deux lignes aient la même combinaison de valeurs sur certaines colonnes
+// Index : accélère les recherches sur une colonne précise (utilisé sur starts_at)
+
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Unique, Index } from "typeorm";
 
 @Entity('events') // cette classe = la table "events" en base
