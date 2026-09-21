@@ -16,7 +16,8 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     // "Bearer abc123".split(' ') → ["Bearer", "abc123"] → [1] = "abc123"
     const token = authHeader.split(' ')[1];
 
-    // pas de deuxième mot trouvé (ex: en-tête mal formé, sans espace) → on refuse
+   // si l'en-tête n'a pas la forme "Bearer xxx" (juste "Bearer" seul, par exemple), token sera undefined → on refuse
+
     if (!token) {
         return res.status(401).json({ error: 'Token manquant' });
     }
