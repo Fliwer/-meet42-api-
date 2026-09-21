@@ -23,6 +23,9 @@ eventRouter.delete('/:id/participate', authMiddleware, participationController.l
 // POST /api/events/UN-ID/groups — créer un groupe pour cet événement (protégé, il faut être connecté)
 eventRouter.post('/:id/groups', authMiddleware, groupController.create);
 
+// GET /api/events/UN-ID/groups — liste les groupes existants pour cet événement (public, pas de authMiddleware)
+eventRouter.get('/:id/groups', groupController.getByEvent);
+
 
 
 export default eventRouter;

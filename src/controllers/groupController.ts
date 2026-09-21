@@ -76,6 +76,16 @@ const groupController = {
     const membres = await groupService.getMembers(idGroupe);
     res.status(200).json(membres);
   },
+
+  // GET /api/events/:id/groups — liste les groupes déjà créés pour un événement
+  getByEvent: async (req: Request, res: Response) => {
+    const idEvenement = req.params.id as string; // l'id de l'événement, dans l'URL
+
+    // demande au service la liste des groupes liés à CET événement précis
+    const groupes = await groupService.getByEvent(idEvenement);
+
+    res.status(200).json(groupes); // renvoie la liste au frontend
+  },
 };
 
 export default groupController;

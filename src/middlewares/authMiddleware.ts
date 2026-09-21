@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
+// Vérifie que la personne qui fait la requête est bien connectée (token valide),
+// AVANT de laisser le controller s'exécuter
+
+
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
     // ÉTAPE 1 : qu'est-ce que le client a mis dans l'en-tête "Authorization" ?

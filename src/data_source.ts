@@ -10,7 +10,7 @@ import { GroupMember } from './entities/GroupMember'; // qui est dans quel group
 
 dotenv.config(); // doit tourner avant qu'on lise process.env plus bas, sinon les valeurs sont undefined
 
-export const AppDataSource = new DataSource({
+export const AppDataSource = new DataSource({ // fiche d'adresse qui permet de se connecter à PostgreSQL
 
  type: 'postgres',
     // ces 5 lignes viennent toutes de .env — jamais écrites en dur, pour ne pas exposer le mot de passe

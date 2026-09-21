@@ -86,6 +86,13 @@ const groupService = {
       return { ...membre, user: userSansMotDePasse };
     });
   },
+  // renvoie tous les groupes liés à un événement précis
+  getByEvent: async (eventId: string) => {
+    const groupRepository = AppDataSource.getRepository(Group);
+    // where: { event: { id: eventId } } : ne garde que les groupes dont l'événement correspond
+    return await groupRepository.find({ where: { event: { id: eventId } } });
+  },
+
 };
 
 export default groupService;

@@ -1,5 +1,8 @@
 # Journal de décisions — Meet42
 
+Obéir quand je dis de taper du code directement dans le fichier
+
+
 Une entrée par décision structurante. Toujours la même forme :
 **ce que j'ai décidé · ce que j'ai écarté · pourquoi.**
 
