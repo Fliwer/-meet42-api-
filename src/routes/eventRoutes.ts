@@ -2,6 +2,8 @@ import express from 'express';
 import eventController from '../controllers/eventControllers'; // la vraie logique (appel au service, réponse HTTP)
 import participationController from '../controllers/participationController';
 import authMiddleware from '../middlewares/authMiddleware'; // protège ces routes, il faut être connecté
+import groupController from '../controllers/groupController';
+
 
 const eventRouter = express.Router(); // un routeur dédié aux événements, comme authRouter et userRouter
 
@@ -17,6 +19,10 @@ eventRouter.post('/:id/participate', authMiddleware, participationController.joi
 
 // DELETE /api/events/UN-ID/participate — se désister
 eventRouter.delete('/:id/participate', authMiddleware, participationController.leave);
+
+// POST /api/events/UN-ID/groups — créer un groupe pour cet événement (protégé, il faut être connecté)
+eventRouter.post('/:id/groups', authMiddleware, groupController.create);
+
 
 
 export default eventRouter;
