@@ -16,6 +16,7 @@ const groupService = {
       event: { id: eventId },
       name,
       meeting_point: meetingPoint,
+      description: intro, // la phrase d'accroche de l'hôte, visible par ceux qui hésitent à rejoindre
     });
     // .save() : ICI, un vrai INSERT part vers PostgreSQL, dans "groups"
     await groupRepository.save(group);
@@ -62,7 +63,17 @@ const groupService = {
       role: 'member', // jamais 'host' pour un simple join
       intro,
     });
-    return await memberRepository.save(member);
+
+    try {
+      return await memberRepository.save(member);
+    } catch (erreur) {
+      // 23505 : code Postgres pour "violation de contrainte UNIQUE" — ici, @Unique(['group', 'user'])
+      // même code déjà utilisé dans authController pour l'email en double
+      if ((erreur as { code?: string }).code === '23505') {
+        throw new Error('ALREADY_MEMBER');
+      }
+      throw erreur; // toute autre erreur imprévue remonte telle quelle
+    }
   },
 
   // supprime la ligne de membership correspondante — quitte le groupe
@@ -89,8 +100,19 @@ const groupService = {
   // renvoie tous les groupes liés à un événement précis
   getByEvent: async (eventId: string) => {
     const groupRepository = AppDataSource.getRepository(Group);
+    const memberRepository = AppDataSource.getRepository(GroupMember);
+
     // where: { event: { id: eventId } } : ne garde que les groupes dont l'événement correspond
-    return await groupRepository.find({ where: { event: { id: eventId } } });
+    const groups = await groupRepository.find({ where: { event: { id: eventId } } });
+
+    // Promise.all : lance les .count() de tous les groupes EN PARALLÈLE (pas un par un, un par un)
+    // memberCount n'est jamais stocké en base (cf. DECISIONS.md) — recalculé à chaque appel
+    return await Promise.all(
+      groups.map(async (group) => {
+        const memberCount = await memberRepository.count({ where: { group: { id: group.id } } });
+        return { ...group, memberCount };
+      })
+    );
   },
 
 };

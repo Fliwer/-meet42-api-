@@ -52,6 +52,9 @@ const groupController = {
       if ((erreur as Error).message === 'GROUP_FULL') {
         return res.status(409).json({ error: 'Ce groupe est complet' }); // 409 = conflit, refus légitime
       }
+      if ((erreur as Error).message === 'ALREADY_MEMBER') {
+        return res.status(409).json({ error: 'Tu es déjà membre de ce groupe' });
+      }
       // toute autre erreur imprévue : on la log pour nous-mêmes, et on renvoie une erreur générique
       console.error(erreur);
       res.status(500).json({ error: 'Erreur serveur' });

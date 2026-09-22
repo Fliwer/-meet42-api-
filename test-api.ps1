@@ -2,6 +2,9 @@
 # Prérequis avant de lancer ce script : Docker démarré, et "npm run dev" qui tourne
 # dans un autre terminal.
 
+# lancer dans terminal .\test-api.ps1
+
+
 # on stocke l'adresse de base une seule fois, pour ne pas la répéter à chaque appel
 $baseUrl = "http://localhost:8080/api"
 
